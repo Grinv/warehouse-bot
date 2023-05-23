@@ -1,4 +1,4 @@
-import winston from 'winston';
+import winston, { Logger } from 'winston';
 
 const alignColorsAndTime = winston.format.combine(
 	winston.format.colorize({
@@ -13,12 +13,16 @@ const alignColorsAndTime = winston.format.combine(
 	winston.format.printf((info) => `${info.label} ${info.timestamp} ${info.level}: ${info.message}`),
 );
 
-const logger = winston.createLogger({
-	transports: [
-		new winston.transports.Console({
-			format: winston.format.combine(winston.format.colorize(), alignColorsAndTime),
-		}),
-	],
-});
+export default class LoggerService {
+	logger: Logger;
 
-export default logger;
+	constructor() {
+		this.logger = winston.createLogger({
+			transports: [
+				new winston.transports.Console({
+					format: winston.format.combine(winston.format.colorize(), alignColorsAndTime),
+				}),
+			],
+		});
+	}
+}

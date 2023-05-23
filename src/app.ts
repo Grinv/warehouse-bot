@@ -1,27 +1,26 @@
+import { DotenvParseOutput } from 'dotenv';
 import { Telegraf } from 'telegraf';
-import logger from './logger';
 import LocalSession from 'telegraf-session-local';
+import { Logger } from 'winston';
+import RepositoryService from './services/repository.service';
 
 export default class App {
-	#token: string;
+	#logger;
+	#repository;
 	#bot;
 
-	constructor(token: string) {
-		this.#token = token;
-		this.#bot = new Telegraf(this.#token);
+	constructor(logger: Logger, token: string, repository: RepositoryService) {
+		this.#logger = logger;
+		this.#repository = repository;
+		this.#bot = new Telegraf(token);
 		this.#bot.use(new LocalSession({ database: 'shop-storage.json' }).middleware());
-		return this;
 	}
 
-	init() {
+	async init() {
 		this.#bot.start((ctx) => {
-			logger.info(ctx.message.chat.id);
 			ctx.reply('Welcome');
 		});
-		this.#bot.help((ctx) => ctx.reply('Send me a sticker'));
-		this.#bot.on('sticker', (ctx) => ctx.reply('👍'));
-		this.#bot.hears('hi', (ctx) => ctx.reply('Hey there'));
 		this.#bot.launch();
-		logger.info('Бот запущен');
+		this.#logger.info('🤖 🚀 bot started');
 	}
 }
