@@ -1,0 +1,4 @@
+```
+TELEGRAM_TOKEN=
+DATABASE_URL=
+```
